@@ -11,6 +11,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState();
   const dispatch = useDispatch();
 
+  // Initialize Books from the API
   useEffect(() => {
     ApiHelper.readBooks().then(data => dispatch(setBooks(JSON.parse(data))));
   }, []);

@@ -1,0 +1,73 @@
+@media (max-width: 600px){
+    h1{
+        font-size: 24px;
+    }
+    h2{
+        font-size: 18px;
+    }
+    .search {
+        font-size: 16px;
+    }
+    .btn {
+        padding: 7px 10px;
+        font-size: 14px;
+    }
+
+    .group-holder .group-header {
+        top: 60px;
+        float: none;
+        font-size: 18px;
+        font-weight: 700;
+        padding: 0.7rem 1rem;
+    }
+    .book-holder {
+        min-height: 45px;
+        padding: 10px;
+        height: auto;
+        font-size: 16px;
+        margin-left: 0;
+    }
+    .book-detail-holder .detail-holder {
+        width: auto;
+        margin: 2rem auto;
+        padding: 2rem;
+        box-shadow: 0 0 25px #00000026;
+        background-color: #FFF8F0;
+    }
+    .flex{
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    .book-detail-holder .description, .book-detail-holder .count {
+        margin-left: 0;
+        margin-bottom: 1rem;
+    }
+    .action-buttons{
+        margin-bottom: 1rem;
+    }
+
+    .list-holder>.flex:first-child{
+        box-shadow: 0 8px 10px rgba(0,0,0,.1);
+    position: sticky;
+    top: 113px;
+    background: #fff;
+    padding: 0.1rem 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 10;
+    border-top: 1px solid gray;
+    }
+    .group-holder{
+        padding: 0 0.7rem;
+    }
+}
+
+@media (max-width: 500px){
+    .action-buttons, .action-holder {
+        margin-left: 0;
+    }
+
+    .search{
+        width: 74%;
+    }
+}

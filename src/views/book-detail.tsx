@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
-import { addBook, selectSelectedBook, udpateSelectedBook, updateBooks, defaultBook } from "../app/reducer";
+import { addBook, selectSelectedBook, udpateSelectedBook, updateBooks, defaultBook, deleteBook } from "../app/reducer";
 
 export const BookDetail = (props: { type: string }) => {
     const selectedBook = useSelector(selectSelectedBook);
     const history = useHistory();
     const dispatch = useDispatch();
+    const textAreaRef = React.useRef<HTMLTextAreaElement>(document.createElement("textarea"));
     let actionType = props.type || 'view';
     const isView = actionType === 'view';
     const isEditable = actionType === 'edit' || actionType === 'add';
@@ -20,26 +21,37 @@ export const BookDetail = (props: { type: string }) => {
         add: 'Add new Book'
     }
 
+    // Handle edits to the book
     const handleChange = (event: any) => {
         const target = event.target;
         const name = target.name;
-
         setCurrentBook({
+            ...currentBook,
             [name]: target.value
         });
     }
-
+    // Update State and Backend API
     const updateBook = () => {
-        const updatedBook = { ...selectedBook, ...currentBook };
-        dispatch(updateBooks({ oldName: selectedBook?.name, newBook: updatedBook }))
-        dispatch(udpateSelectedBook(updatedBook));
+        dispatch(updateBooks({ oldName: selectedBook?.name, newBook: currentBook }))
+        dispatch(udpateSelectedBook(currentBook));
         history.push('/detail');
     }
-    
+    // Add new Book to State and update to API
     const addNewBook = () => {
-        dispatch(addBook({ ...defaultBook, ...currentBook }));
+        dispatch(addBook(currentBook));
         setTimeout(() => history.push('/list'), 1000)
     }
+    // Dynamic text area height
+    const onTextInput = () => {
+        textAreaRef.current.style.height = 'auto';
+        textAreaRef.current.style.height = (textAreaRef.current.scrollHeight) + 'px';
+    }
+
+    // ComponentDidMount using Hooks
+    // Set the height of the text area
+    useEffect(() => {
+        textAreaRef.current.setAttribute('style', 'height:' + (textAreaRef.current.scrollHeight) + 'px;overflow-y:hidden;');
+    }, [])
 
     return (
         <div className={"book-detail-holder " + actionType}>
@@ -48,7 +60,14 @@ export const BookDetail = (props: { type: string }) => {
                     <h2 onClick={() => history.push('/list')} style={{ cursor: "pointer" }}><i className="fa fa-arrow-left back"></i></h2>
                     <h2>{heading[actionType]}</h2>
                     <div className="action-holder flex">
-                        {actionType === 'view' && <Link to="/edit" className="btn btn-outline">Edit Book</Link>}
+                        {actionType === 'view' && <div className="btn btn-outline" onClick={() => {
+                            const result = window.confirm('Are you sure? This action will delete this book.');
+                            if (result) {
+                                dispatch(deleteBook(currentBook));
+                                history.push('/list');
+                            }
+                        }}>Delete</div>}
+                        {actionType === 'view' && <Link to="/edit" className="btn btn-outline">Edit</Link>}
                         {isEditable && <div className="btn btn-outline" onClick={() => { actionType === 'edit' && setCurrentBook(selectedBook); history.push(actionType === 'add' ? '/list' : '/detail') }}>Cancel</div>}
                         {isEditable && <div className="btn btn-primary" onClick={actionType === 'edit' ? updateBook : addNewBook}>{actionType === 'edit' ? 'Done' : 'Add'}</div>}
                     </div>
@@ -64,7 +83,7 @@ export const BookDetail = (props: { type: string }) => {
                 </div>
                 <div className="description">
                     <strong>Description:</strong>
-                    <p><textarea value={currentBook?.description} readOnly={isView} rows={2} onChange={handleChange} name="description" /></p>
+                    <p><textarea value={currentBook?.description} readOnly={isView} rows={2} onChange={handleChange} name="description" ref={textAreaRef} onInput={onTextInput} /></p>
                 </div>
                 <div className="count">
                     <strong>No of Books:</strong>
