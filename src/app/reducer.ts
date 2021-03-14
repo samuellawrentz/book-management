@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk, RootState } from './store';
-import BookData from '../MOCK_DATA.json';
 import { IBook, IUpdateBook, IAppState } from "../helpers/interfaces";
+import { ApiHelper } from "../helpers/api";
+import { useDispatch, useSelector } from 'react-redux';
 
 const initialState: IAppState = {
-    books: BookData,
+    books: [],
     selectedBook: null
 };
 
@@ -26,6 +27,7 @@ export const AppSlice = createSlice({
                 state.books[index].count = (state.books[index].count || 1) + 1;
             else
                 state.books.push(action.payload);
+            ApiHelper.writeBooks(JSON.stringify(state.books));
         },
         udpateSelectedBook: (state, action: PayloadAction<IBook>) => {
             state.selectedBook = action.payload;
@@ -33,23 +35,15 @@ export const AppSlice = createSlice({
         updateBooks: (state, action: PayloadAction<IUpdateBook>) => {
             const filteredBooks = state.books.filter((book => book.name !== action.payload.oldName));
             state.books = [...filteredBooks, action.payload.newBook];
-
+            ApiHelper.writeBooks(JSON.stringify(state.books));
+        },
+        setBooks: (state, action: PayloadAction<any>) => {
+            state.books = action.payload;
         }
     },
 });
 
-export const { addBook, udpateSelectedBook, updateBooks } = AppSlice.actions;
-
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched
-
-// export const incrementAsync = (amount: number): AppThunk => dispatch => {
-//   setTimeout(() => {
-//     dispatch(incrementByAmount(amount));
-//   }, 1000);
-// };
+export const { addBook, udpateSelectedBook, updateBooks, setBooks } = AppSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
