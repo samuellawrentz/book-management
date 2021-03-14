@@ -17,12 +17,17 @@ In the project directory, you can run:
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-## Backed
+## Backend
 
 The backend is a node app built on Express and hosted on Heroku. 
 
+### Run the backend server
+* Navigate to server directory `cd server`
+* Run `node index.js`
+
 #### Endpoints
 getBooks: https://book-management-backend.herokuapp.com/getbooks
+
 writeBooks: https://book-management-backend.herokuapp.com/writebooks
 
 
