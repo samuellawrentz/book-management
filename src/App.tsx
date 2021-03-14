@@ -1,56 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useState } from 'react';
+import { Header } from "./components/header";
+import { ListBooks } from "./views/list-books";
+import { BookDetail } from "./views/book-detail";
+import { Switch, Redirect, Route } from "react-router-dom";
 
 function App() {
+  const [searchTerm, setSearchTerm] = useState();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <Header setSearchTerm={setSearchTerm} searchTerm={searchTerm}></Header>
+      <div className="container">
+        <div className="content-holder">
+            <Switch>
+              <Route path="/list" render={()=><ListBooks searchTerm={searchTerm}></ListBooks>}></Route>
+              <Route path="/detail" component={BookDetail}></Route>
+              <Route path="/edit" render={()=><BookDetail type="edit"></BookDetail>}></Route>
+              <Route path="/add" render={()=><BookDetail type="add"></BookDetail>}></Route>
+              <Redirect to="/list"></Redirect>
+            </Switch>
+        </div>
+      </div>
     </div>
   );
 }
