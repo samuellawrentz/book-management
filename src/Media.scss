@@ -60,6 +60,9 @@
     .group-holder{
         padding: 0 0.7rem;
     }
+    a.book-holder .flex {
+        flex-wrap: nowrap;
+    }
 }
 
 @media (max-width: 500px){
