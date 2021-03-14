@@ -1,4 +1,4 @@
-const apiEndpoint = 'http://book-management-backend.herokuapp.com/'
+const apiEndpoint = 'https://book-management-backend.herokuapp.com/'
 export class ApiHelper {
     static readBooks() {
         return fetch(apiEndpoint + 'getbooks').then(value => value.json());
