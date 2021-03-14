@@ -12,10 +12,15 @@ app.get("/getbooks", (req, res, next) => {
     });
    });
 
+   app.get("/test", (req, res, next) => {
+       console.log('Hello');
+       res.sendStatus(200);
+   });
+
 app.post("/writebooks", (req, res, next) => {
     const books = req.body;
     fs.writeFileSync('./books.json', JSON.stringify(books), 'utf8');
-    res.status(200);
+    res.sendStatus(200);
    });
 
 app.listen(3000, () => {
