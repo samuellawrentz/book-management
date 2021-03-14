@@ -1,5 +1,4 @@
-import { IBook } from "./interfaces";
-const apiEndpoint = 'http://localhost:3000/'
+const apiEndpoint = 'http://book-management-backend.herokuapp.com/'
 export class ApiHelper {
     static readBooks() {
         return fetch(apiEndpoint + 'getbooks').then(value => value.json());
