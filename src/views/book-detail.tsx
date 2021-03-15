@@ -9,6 +9,7 @@ export const BookDetail = (props: { type: string }) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const textAreaRef = React.useRef<HTMLTextAreaElement>(document.createElement("textarea"));
+    const nameRef = React.useRef<HTMLTextAreaElement>(document.createElement("textarea"));
     let actionType = props.type || 'view';
     const isView = actionType === 'view';
     const isEditable = actionType === 'edit' || actionType === 'add';
@@ -39,18 +40,18 @@ export const BookDetail = (props: { type: string }) => {
     // Add new Book to State and update to API
     const addNewBook = () => {
         dispatch(addBook(currentBook));
-        setTimeout(() => history.push('/list'), 1000)
+        setTimeout(() => history.push('/list'), 500)
     }
     // Dynamic text area height
-    const onTextInput = () => {
-        textAreaRef.current.style.height = 'auto';
-        textAreaRef.current.style.height = (textAreaRef.current.scrollHeight) + 'px';
+    const onTextInput = (focusedRef: React.MutableRefObject<HTMLElement>) => {
+        focusedRef.current.style.height = 'auto'; focusedRef.current.style.height = (focusedRef.current.scrollHeight) + 'px';
     }
 
     // ComponentDidMount using Hooks
     // Set the height of the text area
     useEffect(() => {
-        textAreaRef.current.setAttribute('style', 'height:' + (textAreaRef.current.scrollHeight) + 'px;overflow-y:hidden;');
+        nameRef.current.setAttribute('style', 'height:' + (nameRef.current.scrollHeight + 10) + 'px;overflow-y:hidden;');
+        textAreaRef.current.setAttribute('style', 'height:' + (textAreaRef.current.scrollHeight + 10) + 'px;overflow-y:hidden;');
     }, [])
 
     return (
@@ -77,13 +78,13 @@ export const BookDetail = (props: { type: string }) => {
                 <div className="title-desc flex">
                     <i className="fa fa-file-text"></i>
                     <div className="title-author">
-                        <input className="book-name" type="text" value={currentBook?.name} readOnly={isView} onChange={handleChange} name="name"></input>
-                        <div>by <input type="text" value={currentBook?.author} name="author" className="author-input" readOnly={isView} onChange={handleChange} /></div>
+                        <textarea className="book-name" value={currentBook?.name} readOnly={isView} rows={1} onChange={handleChange} name="name" ref={nameRef} onInput={()=> onTextInput(nameRef)}></textarea>
+                        <div className="author-holder">by <input type="text" value={currentBook?.author} name="author" className="author-input" readOnly={isView} onChange={handleChange} /></div>
                     </div>
                 </div>
                 <div className="description">
                     <strong>Description:</strong>
-                    <p><textarea value={currentBook?.description} readOnly={isView} rows={2} onChange={handleChange} name="description" ref={textAreaRef} onInput={onTextInput} /></p>
+                    <p><textarea value={currentBook?.description} readOnly={isView} rows={2} onChange={handleChange} name="description" ref={textAreaRef} onInput={()=> onTextInput(textAreaRef)} /></p>
                 </div>
                 <div className="count">
                     <strong>No of Books:</strong>
