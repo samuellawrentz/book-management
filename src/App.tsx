@@ -4,16 +4,20 @@ import { ListBooks } from "./views/list-books";
 import { BookDetail } from "./views/book-detail";
 import { Switch, Redirect, Route } from "react-router-dom";
 import { ApiHelper } from './helpers/api';
-import { useDispatch } from 'react-redux';
-import { setBooks, } from "./app/reducer";
+import { useDispatch, useSelector } from 'react-redux';
+import { setBooks, selectSelectedBook } from "./app/reducer";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState();
   const dispatch = useDispatch();
+  const [loaded, setLoaded] = useState(false);
 
   // Initialize Books from the API
   useEffect(() => {
-    ApiHelper.readBooks().then(data => dispatch(setBooks(JSON.parse(data))));
+    ApiHelper.readBooks().then(data => {
+      dispatch(setBooks(JSON.parse(data)));
+      setTimeout(()=>setLoaded(true), 1000);
+    });
   }, []);
 
   return (
@@ -22,10 +26,10 @@ function App() {
       <div className="container">
         <div className="content-holder">
           <Switch>
-            <Route path="/list" render={() => <ListBooks searchTerm={searchTerm}></ListBooks>}></Route>
-            <Route path="/detail" component={BookDetail}></Route>
-            <Route path="/edit" render={() => <BookDetail type="edit"></BookDetail>}></Route>
+            <Route path="/list" render={() => <ListBooks searchTerm={searchTerm} loaded={loaded}></ListBooks>}></Route>
             <Route path="/add" render={() => <BookDetail type="add"></BookDetail>}></Route>
+            {useSelector(selectSelectedBook) && <Route path="/detail" component={BookDetail}></Route>}
+            {useSelector(selectSelectedBook) && <Route path="/edit" render={() => <BookDetail type="edit"></BookDetail>}></Route>}
             <Redirect to="/list"></Redirect>
           </Switch>
         </div>
